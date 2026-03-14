@@ -1,59 +1,87 @@
-import os
-import google.generativeai as genai
-from dotenv import load_dotenv
+# import os
+# import google.generativeai as genai
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-API_KEY = os.getenv("GEMINI_API_KEY")
+# API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found")
+# if not API_KEY:
+#     raise ValueError("GEMINI_API_KEY not found")
 
-genai.configure(api_key=API_KEY)
+# genai.configure(api_key=API_KEY)
 
-model = genai.GenerativeModel("gemini-2.5-flash")
-
-
-def evaluate_resume(resume_text: str, job_description: str):
-
-    prompt = f"""
-You are an AI HR evaluator.
-
-Evaluate the candidate resume against the job description.
-
-Return JSON only.
-
-Resume:
-{resume_text}
-
-Job Description:
-{job_description}
-
-Return in JSON format:
-
-{{
-"score": number from 0-100,
-"matching_skills": [],
-"missing_skills": [],
-"experience_match": "",
-"final_recommendation": "Hire / Maybe / Reject"
-}}
-"""
-
-    response = model.generate_content(prompt)
-
-    return response.text
+# model = genai.GenerativeModel("gemini-2.5-flash")
 
 
-# from sentence_transformers import SentenceTransformer
-# from sklearn.metrics.pairwise import cosine_similarity
+# def evaluate_resume(resume_text: str, job_description: str):
 
-# model = SentenceTransformer("all-MiniLM-L6-v2")
+#     prompt = f"""
+# You are an AI HR evaluator.
 
-# def generate_embedding(text):
-#     return model.encode(text).tolist()
+# Evaluate the candidate resume against the job description.
 
-# def compute_similarity(text1, text2):
-#     emb1 = model.encode([text1])
-#     emb2 = model.encode([text2])
-#     return float(cosine_similarity(emb1, emb2)[0][0])
+# Return JSON only.
+
+# Resume:
+# {resume_text}
+
+# Job Description:
+# {job_description}
+
+# Return in JSON format:
+
+# {{
+# "score": number from 0-100,
+# "matching_skills": [],
+# "missing_skills": [],
+# "experience_match": "",
+# "final_recommendation": "Hire / Maybe / Reject"
+# }}
+# """
+
+#     response = model.generate_content(prompt)
+
+#     return response.text
+
+
+# # from sentence_transformers import SentenceTransformer
+# # from sklearn.metrics.pairwise import cosine_similarity
+
+# # model = SentenceTransformer("all-MiniLM-L6-v2")
+
+# # def generate_embedding(text):
+# #     return model.encode(text).tolist()
+
+# # def compute_similarity(text1, text2):
+# #     emb1 = model.encode([text1])
+# #     emb2 = model.encode([text2])
+# #     return float(cosine_similarity(emb1, emb2)[0][0])
+
+
+
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load embedding model once when the service starts
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+def generate_embedding(text: str):
+    """
+    Generate embedding vector for a given text.
+    """
+    embedding = model.encode(text)
+    return embedding
+
+
+def compute_similarity(text1: str, text2: str):
+    """
+    Compute cosine similarity between two texts.
+    """
+    emb1 = generate_embedding(text1)
+    emb2 = generate_embedding(text2)
+
+    score = cosine_similarity([emb1], [emb2])[0][0]
+
+    return float(score)
