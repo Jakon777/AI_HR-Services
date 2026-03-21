@@ -149,13 +149,8 @@
 
 
 
-from typing import Optional
-
-import spacy
 import pdfplumber
 import re
-
-nlp = spacy.load("en_core_web_sm")
 
 
 def extract_text_from_pdf(path):
@@ -233,29 +228,9 @@ def _line_looks_like_person_name(line: str) -> bool:
         return False
     if not all(_word_is_name_token(w) for w in words):
         return False
-    # Title Case or reasonable mixed case (e.g. McDonald)
+    # Title Case or reasonable mixed case (e.g. McDonald); ALL-CAPS also OK
     title_like = sum(1 for w in words if w[:1].isupper())
     return title_like >= max(1, len(words) - 1)
-
-
-def _extract_name_spacy(text: str) -> Optional[str]:
-    sample = text[:2000]
-    if not sample.strip():
-        return None
-    doc = nlp(sample)
-    for ent in doc.ents:
-        if ent.label_ != "PERSON":
-            continue
-        cand = ent.text.strip()
-        wcount = len(cand.split())
-        if not (1 <= wcount <= 4):
-            continue
-        if _normalize_header_key(cand) in _SECTION_HEADERS:
-            continue
-        if any(ch.isdigit() for ch in cand):
-            continue
-        return cand
-    return None
 
 
 def extract_name(text):
@@ -275,10 +250,6 @@ def extract_name(text):
             continue
         if _line_looks_like_person_name(line):
             return line
-
-    spacy_name = _extract_name_spacy(text)
-    if spacy_name:
-        return spacy_name
 
     for line in head:
         if not line or _looks_like_contact_line(line):
