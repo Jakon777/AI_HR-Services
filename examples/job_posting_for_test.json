@@ -1,0 +1,30 @@
+{
+  "_id": "jobPosting_20001",
+  "title": "Frontend Developer",
+  "description": "We are looking for a passionate Frontend Developer to build responsive and user-friendly web applications. The candidate should have strong knowledge of HTML, CSS, JavaScript and basic understanding of backend integration. Experience with modern UI/UX practices and problem-solving skills is a plus.",
+  "skillsRequired": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "React",
+    "Basic Python",
+    "DSA in Java"
+  ],
+  "salaryRange": "5 LPA - 10 LPA",
+  "jobType": "FULL_TIME",
+  "experienceRequired": 1,
+  "profile": "Frontend Developer",
+  "postBy": "hr_10020",
+  "companyId": "companyProfile_10020",
+  "createdAt": {
+    "$date": "2026-03-21T10:00:00.000Z"
+  },
+  "createdBy": "hr_10020",
+  "updatedAt": {
+    "$date": "2026-03-21T10:00:00.000Z"
+  },
+  "updatedBy": "hr_10020",
+  "isActive": true,
+  "_class": "com.aibackend.AiBasedEndtoEndSystem.entity.JobPostings",
+  "difficulty": "Intermediate"
+}
