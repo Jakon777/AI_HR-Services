@@ -63,16 +63,21 @@
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load embedding model once when the service starts
-model = SentenceTransformer("all-MiniLM-L6-v2")
+_model: SentenceTransformer | None = None
+
+
+def _get_model() -> SentenceTransformer:
+    global _model
+    if _model is None:
+        _model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _model
 
 
 def generate_embedding(text: str):
     """
     Generate embedding vector for a given text.
     """
-    embedding = model.encode(text)
-    return embedding
+    return _get_model().encode(text)
 
 
 def compute_similarity(text1: str, text2: str):
